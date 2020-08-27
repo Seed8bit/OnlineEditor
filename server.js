@@ -3,6 +3,7 @@ const { graphqlHTTP } = require("express-graphql");
 const app = express();
 const {ourSchema} = require('./schema');
 const allResolver = require('./resolvers/index');
+const authmiddleware = require('./middleware');
 
 const mongoose = require('mongoose');
 
@@ -12,7 +13,7 @@ retryWrites=true&w=majority`, {useNewUrlParser : true, useUnifiedTopology: true}
   console.log('Connected to mongodb');
 });
 
-
+app.use(authmiddleware);
 
 app.use(
   "/graphql",

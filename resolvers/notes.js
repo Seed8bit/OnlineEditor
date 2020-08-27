@@ -51,7 +51,12 @@ module.exports = {
       throw err;
     }
   },
-  deleteNote: async({_id}) => {
+  deleteNote: async({_id}, req) => {
+
+    if (!req.authUser) {
+      throw new Error('Not Authorized');
+    }
+
     try {
       const note = await Note.findByIdAndRemove({_id: _id})
       return {...note._doc};
@@ -59,18 +64,23 @@ module.exports = {
       throw err;
     }
   },
-  createNote: async({noteInput}) => {
+  createNote: async({noteInput}, req) => {
+
+    if (!req.authUser) {
+      throw new Error('Not Authorized');
+    }
+
     const note = new Note({
       title: noteInput.title,
       content: noteInput.content,
       image: noteInput.image,
-      userCreator: '5f471adabbbf1d1be021eca1'
+      userCreator: req.userId
     });
 
     let notes;
     try {
       const result = await note.save();
-      const findUser = await User.findById('5f471adabbbf1d1be021eca1');
+      const findUser = await User.findById(req.userId);
       if (!findUser) {
         return new Error('User not found!');
       } else {
