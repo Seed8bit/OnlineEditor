@@ -4,7 +4,8 @@ const {buildSchema} = require('graphql');
 const ourSchema = buildSchema(`
 type Query {
   notes: [Note],
-  note(id: ID): Note
+  note(id: ID): Note,
+  login(email: String, password: String): AuthData
 }
 
 type Note {
@@ -21,6 +22,13 @@ type User {
   email: String,
   password: String,
   createdNotes: [Note]
+}
+
+type AuthData {
+  userId: ID!
+  username: String
+  token: String
+  email: String
 }
 
 input noteinput {
