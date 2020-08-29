@@ -1,10 +1,21 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import Editor from '../components/Editor';
+import Sidebar from '../components/SideBar';
+import './Home.css';
 
 const Home = () => {
   return(
-    <div>
-      Im the home
-    </div>
+    <React.Fragment>
+      <div className="home-container">
+        <div className="sidebar">
+          <Sidebar/>
+        </div>
+        <div className="editor">
+          <Editor/>
+        </div>
+      </div>
+    </React.Fragment>
+    
   )
 }
 
