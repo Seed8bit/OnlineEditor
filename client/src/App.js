@@ -1,12 +1,15 @@
 import React from 'react';
 import './App.css';
 import Home from './pages/Home';
+import {StateProvider} from './StateContext';
 
 function App() {
   return (
-    <React.Fragment className="App">
-      <Home/>
-    </React.Fragment>
+    <StateProvider>
+      <React.Fragment>
+        <Home/>
+      </React.Fragment>
+    </StateProvider>
   )
 }
 
