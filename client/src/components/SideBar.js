@@ -1,18 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import './Sidebar.css';
 import Notes from "../components/Notes";
 import {StateContext} from "../StateContext";
 
 const Sidebar = () => {
-  const [state, setState] = useContext(StateContext);
-  const toggleLogin = () => {
-    setState({...state, loginToggle: !state.loginToggle});
-    console.log(state);
-  };
-  const toggleRegister = () => {
-    setState({...state, registerToggle: !state.registerToggle});
-    console.log(state);
-  };
+  const [state] = useContext(StateContext);
 
   return(
     <React.Fragment>
@@ -25,12 +17,7 @@ const Sidebar = () => {
             <div className="header-account">
               <div className="header-login pr-3">
                 <p className="text-blue-600">
-                  <button onClick={toggleLogin}>Login</button>
-                </p>
-              </div>
-              <div className="header-register">
-                <p className="text-blue-600">
-                  <button onClick={toggleRegister}>Register</button>
+                  User:{state.username}
                 </p>
               </div>
             </div>

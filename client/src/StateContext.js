@@ -9,7 +9,12 @@ export const StateProvider = ({children}) => {
     registerToggle: false,
     editorState: EditorState.createEmpty(),
     contentState: null,
-    uploadImages: []
+    uploadImages: [],
+    loginError: "",
+    registerSuccess: "",
+    registerError: "",
+    username: "",
+    usertoken: ""
   });
   return (
     <StateContext.Provider value={[state, setState]}>

@@ -2,28 +2,41 @@ import React, {useContext} from 'react';
 import "./RegisterModal.css";
 import {StateContext} from '../StateContext';
 import { useForm } from 'react-hook-form';
+import { useHistory  } from "react-router-dom";
 
 const RegisterModal = () => {
   const [state, setState] = useContext(StateContext);
-  const closeBtn = () => {
-    setState({
-      ...state, registerToggle: false
-    });
-  };
+  const history = useHistory();
 
   const {register, errors, handleSubmit} = useForm({
     mode: "onBlur"
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    const {username, email, password} = data;
+    console.log(`mutation{createUser(userInput:{username:"${username}",email:"${email}",password:"${password}"}) {_id}}`)
+    fetch('/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({query: `mutation{createUser(userInput:{username:"${username}",email:"${email}",password:"${password}"}) {_id}}`})
+    }).then(r => r.json())
+    .then(res => {
+      console.log('data returned:', res);
+      if (res.data && res.data.createUser) {
+        const {_id} = res.data.createUser;
+        setState({...state, registerSuccess: 'Success! Click Login to access'})
+      } else {
+        setState({...state, registerError: res.errors[0].message})
+      }
+    });
   };
 
   return (
     <React.Fragment>
       <section className="register-wrapper">
         <div className="register-content">
-          <button className="close-btn" onClick={closeBtn}>x</button>
           <div className="flex flex-col items-center h-full py-8">
             <h3 className="text-2xl">Register</h3>
             <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 form" onSubmit={handleSubmit(onSubmit)}>
@@ -74,9 +87,23 @@ const RegisterModal = () => {
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                <button 
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                  type="submit">
                   Sign Up
                 </button>
+                <button 
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                  type="button"
+                  onClick={() => {history.push("/login")}}>
+                    Login
+                </button>
+              </div>
+              <div className="text-green-500 pt-2 text-sm italic">
+                {state.registerSuccess}
+              </div>
+              <div className="text-red-500 pt-2 text-sm italic">
+                {state.registerError}
               </div>
             </form>
           </div>

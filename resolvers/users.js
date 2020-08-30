@@ -17,7 +17,7 @@ module.exports = {
     const user = new User({
       username: userInput.username,
       email: userInput.email,
-      password: hashedPassword
+      password: hashedPassword,
     });
     try {
       const result = await user.save();
@@ -46,6 +46,7 @@ module.exports = {
 
       return {
         userId: findUser._id,
+        username: findUser.username,
         email: findUser.email,
         token: token
       }

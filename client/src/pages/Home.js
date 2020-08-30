@@ -3,16 +3,19 @@ import CodeEditor from '../components/CodeEditor';
 import Sidebar from '../components/SideBar';
 import './Home.css';
 import {StateContext} from '../StateContext';
-import LoginModal from '../components/LoginModal';
-import RegisterModal from '../components/RegisterModal';
+import { useHistory  } from "react-router-dom";
 
 const Home = () => {
-  const [state] = useContext(StateContext)
+  const [state] = useContext(StateContext);
+  const username = state.username;
+  const history = useHistory();
+
+  if (username === "") {
+    history.push("/login");
+  }
 
   return(
     <React.Fragment>
-      {state.loginToggle ? <LoginModal/>:""}
-      {state.registerToggle ? <RegisterModal/>:""}
       <div className="home-container">
         <div className="sidebar">
           <Sidebar/>

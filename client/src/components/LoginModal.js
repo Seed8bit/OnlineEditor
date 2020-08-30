@@ -2,28 +2,42 @@ import React, {useContext} from 'react';
 import "./LoginModal.css";
 import {StateContext} from '../StateContext';
 import { useForm } from 'react-hook-form';
+import { useHistory  } from "react-router-dom";
+
 
 const LoginModal = () => {
   const [state, setState] = useContext(StateContext);
-  const closeBtn = () => {
-    setState({
-      ...state, loginToggle: false
-    });
-  };
+  const history = useHistory();
 
   const {register, errors, handleSubmit} = useForm({
     mode: "onBlur"
   });
-
+  
   const onSubmit = (data) => {
-    console.log(data);
+    const {email, password} = data;
+    fetch('/graphql', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({query: `{ login(email: "${email}", password: "${password}"){username, token} }`})
+    }).then(r => r.json())
+    .then((res) => {
+      if (res.data && res.data.login) {
+        const {token, username} = res.data.login;
+        console.log(`token: ${token}, username: ${username}`);
+        setState({...state, usertoken:token, username: username})
+        history.push("/home");
+      } else {
+        setState({...state, loginError: res.errors[0].message})
+      }
+    });
   };
 
   return (
     <React.Fragment>
       <section className="login-wrapper">
         <div className="login-content">
-          <button className="close-btn" onClick={closeBtn}>x</button>
           <div className="flex flex-col items-center h-full py-8">
             <h3 className="text-2xl">Login</h3>
             <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 form" onSubmit={handleSubmit(onSubmit)}>
@@ -57,9 +71,20 @@ const LoginModal = () => {
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                <button 
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                  type="submit">
                   Sign In
                 </button>
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-8" 
+                  type="button"
+                  onClick={() => {history.push("/register")}}>
+                  Register
+                </button>
+              </div>
+              <div className="text-red-500 pt-2 text-sm italic">
+                {state.loginError}
               </div>
             </form>
           </div>
