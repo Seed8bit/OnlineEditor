@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import Editor from '../components/Editor';
+import CodeEditor from '../components/CodeEditor';
 import Sidebar from '../components/SideBar';
 import './Home.css';
 import {StateContext} from '../StateContext';
@@ -18,7 +18,7 @@ const Home = () => {
           <Sidebar/>
         </div>
         <div className="editor">
-          <Editor/>
+          <CodeEditor/>
         </div>
       </div>
     </React.Fragment>
