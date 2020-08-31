@@ -20,13 +20,13 @@ const LoginModal = () => {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({query: `{ login(email: "${email}", password: "${password}"){username, token} }`})
+      body: JSON.stringify({query: `{ login(email: "${email}", password: "${password}"){username, userId, token} }`})
     }).then(r => r.json())
     .then((res) => {
       if (res.data && res.data.login) {
-        const {token, username} = res.data.login;
-        console.log(`token: ${token}, username: ${username}`);
-        setState({...state, usertoken:token, username: username})
+        const {username, userId, token} = res.data.login;
+        console.log(`userId: ${userId}, username: ${username}, token: ${token}`);
+        setState({...state, userid:userId, username: username, authToken: token})
         history.push("/home");
       } else {
         setState({...state, loginError: res.errors[0].message})

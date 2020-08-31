@@ -11,11 +11,13 @@ const authMiddleware = (req, res, next) => {
   const token = authHeader.split(' ')[1];      // Authorization:bearer token..
   if (!token || token === '') {
     req.authUser = false;
-    return next()
+    return next();
   } else {
     const decoded = jwt.verify(token, 'powerfulSecret');
     req.authUser = true;
     req.userId  = decoded.userId;
+    console.log(`authUser: ${req.authUser}, userId: ${req.userId}`);
+    return next();
   }
 }
 

@@ -44,7 +44,7 @@ const CodeEditor = () => {
       content: "",
       image: ""
     };
-    const {contentState, uploadImages} = state;
+    const {contentState, uploadImages, authToken} = state;
     contentState.map(data => {
       const {type, text} = data;
       if (type === 'header-one') {
@@ -59,6 +59,22 @@ const CodeEditor = () => {
     uploadImages.map(data => {
       const {name} = data.file;
       editor.image = name;
+    });
+
+    fetch('/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + authToken
+      },
+      body: JSON.stringify({query: `mutation{createNote(noteInput:{title:"${editor.title}", content:"${editor.content}"}) {_id}}`})
+    }).then(r => r.json())
+    .then(res => {
+      if (res.data && res.data.createNote) {
+        const {_id} = res.data.createNote;
+        setState({...state, userDocs: state.userDocs})
+      } else {
+      }
     });
   }
 

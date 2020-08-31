@@ -3,7 +3,7 @@ const {buildSchema} = require('graphql');
 // Build Schema
 const ourSchema = buildSchema(`
 type Query {
-  notes: [Note],
+  notes(id: ID): [Note],
   note(id: ID): Note,
   login(email: String, password: String): AuthData
 }

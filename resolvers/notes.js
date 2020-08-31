@@ -27,23 +27,27 @@ const getNotes = async(noteid) => {
 };
 
 module.exports = {
-  notes: async() => {
+  notes: async({id}) => {      // id is objectId for user
     try {
       const notes = await Note.find((err) => {
         if (err) {
           throw err;
         }
       });
-      return notes.map(note => {
-        return {...note._doc, userCreator: getUser(note._doc.userCreator)}
+      
+      const userNotes = notes.filter(note=>{
+        return (id === (note._doc.userCreator._id + "")); 
+      }).map(note => {
+          return {...note._doc, userCreator: getUser(note.userCreator)}
       });
+      return userNotes;
     } catch (err) {
       throw err;
     }
   },
-  note: async ({_id}) => {
+  note: async ({id}) => {
     try {
-      const findNote = await Note.findById(_id)
+      const findNote = await Note.findById(id)
       return {
         ...findNote._doc
       }

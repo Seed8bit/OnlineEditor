@@ -14,7 +14,6 @@ const RegisterModal = () => {
 
   const onSubmit = (data) => {
     const {username, email, password} = data;
-    console.log(`mutation{createUser(userInput:{username:"${username}",email:"${email}",password:"${password}"}) {_id}}`)
     fetch('/graphql', {
       method: 'POST',
       headers: {

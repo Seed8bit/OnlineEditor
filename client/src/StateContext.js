@@ -14,7 +14,9 @@ export const StateProvider = ({children}) => {
     registerSuccess: "",
     registerError: "",
     username: "",
-    usertoken: ""
+    userid: "",
+    authToken: "",
+    userDocs: [],
   });
   return (
     <StateContext.Provider value={[state, setState]}>

@@ -4,7 +4,33 @@ import Notes from "../components/Notes";
 import {StateContext} from "../StateContext";
 
 const Sidebar = () => {
-  const [state] = useContext(StateContext);
+  const [state, setState] = useContext(StateContext);
+  const {userDocs} = state;
+
+  useEffect(() => {
+    const {userid} = state;
+
+    const fetchData = async() => {
+      fetch('/graphql', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({query: `{ notes(id: "${userid}"){title,content} }`})
+      }).then(r => r.json())
+      .then((res) => {
+        if (res.data && res.data.notes) {
+          if (res.data.notes.length !== state.userDocs.length) {
+            setState({...state, userDocs: res.data.notes})
+          }
+        } else {
+          throw new Error('fetching documents failed!');
+        }
+      });
+    }
+
+    fetchData();
+  });     // TODO, add dependency list
 
   return(
     <React.Fragment>
@@ -28,7 +54,7 @@ const Sidebar = () => {
           </div>
         </div>
         <div className="note-list w-full px-2 mt-8">
-          <Notes/>
+          <Notes fetchedNotes={userDocs}/>
         </div>
       </section>
 
